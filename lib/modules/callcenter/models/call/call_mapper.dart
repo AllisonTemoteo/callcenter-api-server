@@ -7,6 +7,7 @@ import 'package:server/modules/callcenter/models/call_activity.dart/activity.dar
 import 'package:server/modules/callcenter/models/call_activity.dart/activity_mapper.dart';
 
 abstract class CallMapper {
+  static const String kId = 'id';
   static const String kLinkedId = 'linked_id';
   static const String kPeerPhone = 'peer_phone';
   static const String kCallDateTime = 'call_date_time';
@@ -22,12 +23,14 @@ abstract class CallMapper {
     final activities = activitiesMaps.map(ActivityMapper.fromMap).toList();
 
     return Call(
+      id: map['id'],
       linkedId: map[kLinkedId],
       peer: map[kPeerPhone],
       callDateTime: map[kCallDateTime].toString().toLocalDateTime,
       billSec: Duration(seconds: map[kBillSec]),
       direction: Direction.fromCode(map[kDirection]),
       queueName: map[kQueue],
+      protocol: map[kProtocol],
       activities: activities,
     );
   }
@@ -40,11 +43,12 @@ abstract class CallMapper {
     }
 
     return {
+      kId: call.id,
       kLinkedId: call.linkedId,
       kPeerPhone: call.peer,
       kCallDateTime: call.callDateTime.iso,
       kBillSec: call.billSec.inSeconds,
-      kDirection: call.direction.code,
+      kDirection: call.direction.str,
       kQueue: call.queueName,
       kProtocol: call.protocol,
       kActivities: events,

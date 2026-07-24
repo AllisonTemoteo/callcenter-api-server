@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:server/core/external/database/app_database.dart';
 import 'package:server/core/external/http/http_client.dart';
 import 'package:server/infra/api/controllers/callcenter_controller.dart';
+import 'package:server/infra/api/controllers/scheduler_controller.dart';
 import 'package:server/infra/api/server.dart';
 import 'package:server/modules/callcenter/callcenter_module.dart';
 import 'package:server/modules/callcenter/repositories/call_local_repository.dart';
@@ -41,6 +42,9 @@ void initDi() {
   // api
   di.registerLazySingleton<CallcenterController>(
     () => CallcenterController(di()),
+  );
+  di.registerLazySingleton<SchedulerController>(
+    () => SchedulerController(di()),
   );
   di.registerLazySingleton<ApiServer>(() => ApiServer());
 }

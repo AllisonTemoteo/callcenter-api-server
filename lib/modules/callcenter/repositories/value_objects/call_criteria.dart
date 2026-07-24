@@ -7,8 +7,15 @@ class CallCriteria implements Criteria {
   final DateTime? startDate;
   final DateTime? endDate;
   final String? protocol;
+  final String? phone;
 
-  CallCriteria({this.linkedId, this.startDate, this.endDate, this.protocol});
+  CallCriteria({
+    this.linkedId,
+    this.startDate,
+    this.endDate,
+    this.protocol,
+    this.phone,
+  });
 
   @override
   String? get whereClausule {
@@ -25,10 +32,13 @@ class CallCriteria implements Criteria {
     if (protocol != null) {
       conditions.add('${CallMapper.kProtocol} = ?');
     }
+    if (phone != null) {
+      conditions.add('${CallMapper.kPeerPhone} = ?');
+    }
 
     if (conditions.isEmpty) return '';
 
-    return 'WHERE ${conditions.join(' AND ')}';
+    return 'WHERE ${conditions.join(' AND ')}\n';
   }
 
   @override
@@ -38,7 +48,8 @@ class CallCriteria implements Criteria {
     args.add(startDate?.iso);
     args.add(endDate?.iso);
     args.add(protocol);
+    args.add(phone);
 
-    return args.nonNulls.toList();
+    return List.unmodifiable(args.nonNulls.toList());
   }
 }

@@ -17,7 +17,7 @@ abstract class ScheduleMapper {
     return Schedule(
       id: map[kId],
       type: ActionType.fromCode(map[kType]),
-      runInterval: Duration(seconds: map[kRunInterval]),
+      runInterval: Duration(seconds: map[kRunInterval] ?? 0),
       runAt: (map[kRunAt] as String).toLocalDateTime,
       params: jsonDecode(map[kParams] ?? '{}'),
       error: map['error'],

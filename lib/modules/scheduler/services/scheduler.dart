@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:server/core/utils/typedefs.dart';
 import 'package:server/modules/scheduler/actions/schedule_enums.dart';
 import 'package:server/modules/scheduler/repositories/schedule_repository.dart';
@@ -35,22 +36,22 @@ class Scheduler {
     _timer?.cancel();
   }
 
-  void schedule(
+  Future<void> schedule(
     ActionType type, {
     Duration delay = Duration.zero,
     DateTime? runAt,
     Duration? runInterval,
-    Json? configs,
+    Json? params,
   }) async {
     await _schedules.schedule(
       type,
-      runAt: runAt,
+      runAt: runAt?.add(delay) ?? clock.now().add(delay),
       runInterval: runInterval,
-      params: configs,
+      params: params,
     );
   }
 
-  void cancel(int id) async {
+  Future<void> cancel(int id) async {
     await _schedules.cancel(id);
   }
 }

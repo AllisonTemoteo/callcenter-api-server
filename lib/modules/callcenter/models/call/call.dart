@@ -5,6 +5,7 @@ export 'call_enum.dart' show Direction;
 
 class Call {
   const Call({
+    required this.id,
     required this.linkedId,
     required this.peer,
     required this.callDateTime,
@@ -15,6 +16,7 @@ class Call {
     this.protocol,
   });
 
+  final int id;
   final String linkedId;
   final String peer;
   final DateTime callDateTime;

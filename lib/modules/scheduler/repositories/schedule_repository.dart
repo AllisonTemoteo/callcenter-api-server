@@ -1,4 +1,5 @@
-import 'package:clock/clock.dart';
+import 'dart:convert';
+
 import 'package:server/core/external/database/app_database.dart';
 import 'package:server/core/utils/extensions.dart';
 import 'package:server/core/utils/typedefs.dart';
@@ -12,7 +13,7 @@ abstract class IScheduleRepository {
 
   Future<Schedule> schedule(
     ActionType type, {
-    DateTime? runAt,
+    required DateTime runAt,
     Duration? runInterval,
     Json? params,
   });
@@ -52,7 +53,7 @@ class ScheduleRepository implements IScheduleRepository {
   @override
   Future<Schedule> schedule(
     ActionType type, {
-    DateTime? runAt,
+    required DateTime runAt,
     Duration? runInterval,
     Json? params,
   }) async {
@@ -60,9 +61,9 @@ class ScheduleRepository implements IScheduleRepository {
 
     final data = <String, dynamic>{
       'type': type.code,
-      'run_at': runAt?.iso ?? clock.now(),
+      'run_at': runAt.iso,
       'run_interval': runInterval?.inSeconds,
-      'params': params,
+      'params': jsonEncode(params),
     };
 
     data['id'] = await conn.insert('schedule', data);

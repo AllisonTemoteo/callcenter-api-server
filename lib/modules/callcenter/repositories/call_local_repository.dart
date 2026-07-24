@@ -8,7 +8,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 abstract class ICallLocalRepository {
   Future<int> saveAll(List<Json> calls);
-  Future<List<Call>> get([CallCriteria? criteria]);
+  Future<List<Call>> get(CallCriteria? criteria, {int? limit, int page});
 }
 
 class CallSqliteRepository implements ICallLocalRepository {
@@ -16,11 +16,16 @@ class CallSqliteRepository implements ICallLocalRepository {
   final AppDatabase _storage;
 
   @override
-  Future<List<Call>> get([CallCriteria? criteria]) async {
+  Future<List<Call>> get(
+    CallCriteria? criteria, {
+    int? limit,
+    int page = 1,
+  }) async {
     final conn = await _storage.connection;
 
     final sql =
         'SELECT \n'
+        '    c.${CallMapper.kId},\n'
         '    c.${CallMapper.kLinkedId},\n'
         '    c.${CallMapper.kCallDateTime},\n'
         '    c.${CallMapper.kDirection},\n'
@@ -46,7 +51,7 @@ class CallSqliteRepository implements ICallLocalRepository {
         'JOIN call_activity ca USING(${CallMapper.kLinkedId})\n'
         'LEFT JOIN agent a ON \n'
         '    a.code = ca.agent_code\n'
-        '${criteria != null ? '${criteria.whereClausule}\n' : ''}'
+        '${criteria != null ? '${criteria.whereClausule}' : ''}'
         'GROUP BY \n'
         '    c.${CallMapper.kLinkedId},\n'
         '    c.${CallMapper.kCallDateTime},\n'
@@ -55,6 +60,10 @@ class CallSqliteRepository implements ICallLocalRepository {
         '    c.${CallMapper.kQueue},\n'
         '    c.${CallMapper.kProtocol},\n'
         '    c.${CallMapper.kBillSec}\n'
+        'ORDER BY '
+        '    c.${CallMapper.kId},\n'
+        '    ca.${ActivityMapper.kId}\n'
+        '${limit == null ? '' : 'LIMIT $limit\nOFFSET ${(page * limit) - limit}\n'}'
         ';';
 
     final query = await conn.rawQuery(sql, criteria?.args);

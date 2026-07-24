@@ -9,6 +9,10 @@ enum ActionType {
   static ActionType fromCode(int code) {
     return values.firstWhere((type) => type.code == code);
   }
+
+  static ActionType fromName(String name) {
+    return values.firstWhere((type) => type.name == name);
+  }
 }
 
 enum Status {

@@ -21,7 +21,10 @@ class CallcenterController {
         protocol: params['protocol'],
       );
 
-      final calls = await _getCalls(criteria);
+      final limit = int.tryParse(params['limit'] ?? '') ?? 100;
+      final page = int.tryParse(params['page'] ?? '') ?? 0;
+
+      final calls = await _getCalls(criteria, limit: limit, page: page);
       final callsMaps = calls.map(CallMapper.toMap).toList();
 
       final headers = {'content-type': 'application/json'};
