@@ -6,11 +6,7 @@ class GetCallsService {
   const GetCallsService(ICallLocalRepository calls) : _calls = calls;
   final ICallLocalRepository _calls;
 
-  Future<List<Call>> call(
-    CallCriteria? criteria, {
-    required int limit,
-    required int page,
-  }) async {
-    return await _calls.get(criteria, limit: limit, page: page);
+  Future<List<Call>> call(CallCriteria? criteria) async {
+    return await _calls.get(criteria);
   }
 }

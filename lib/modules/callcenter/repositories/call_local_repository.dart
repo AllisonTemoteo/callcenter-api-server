@@ -8,7 +8,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 abstract class ICallLocalRepository {
   Future<int> saveAll(List<Json> calls);
-  Future<List<Call>> get(CallCriteria? criteria, {int? limit, int page});
+  Future<List<Call>> get(CallCriteria? criteria);
 }
 
 class CallSqliteRepository implements ICallLocalRepository {
@@ -16,11 +16,7 @@ class CallSqliteRepository implements ICallLocalRepository {
   final AppDatabase _storage;
 
   @override
-  Future<List<Call>> get(
-    CallCriteria? criteria, {
-    int? limit,
-    int page = 1,
-  }) async {
+  Future<List<Call>> get(CallCriteria? criteria) async {
     final conn = await _storage.connection;
 
     final sql =
@@ -60,10 +56,11 @@ class CallSqliteRepository implements ICallLocalRepository {
         '    c.${CallMapper.kQueue},\n'
         '    c.${CallMapper.kProtocol},\n'
         '    c.${CallMapper.kBillSec}\n'
-        'ORDER BY '
+        'ORDER BY\n'
         '    c.${CallMapper.kId},\n'
         '    ca.${ActivityMapper.kId}\n'
-        '${limit == null ? '' : 'LIMIT $limit\nOFFSET ${(page * limit) - limit}\n'}'
+        '${criteria != null ? '${criteria.limit}\n' : ''}'
+        '${criteria != null ? '${criteria.offset}\n' : ''}'
         ';';
 
     final query = await conn.rawQuery(sql, criteria?.args);

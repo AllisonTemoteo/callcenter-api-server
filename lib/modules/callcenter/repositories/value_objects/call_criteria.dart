@@ -8,6 +8,8 @@ class CallCriteria implements Criteria {
   final DateTime? endDate;
   final String? protocol;
   final String? phone;
+  final int? pageItemsCount;
+  final int? page;
 
   CallCriteria({
     this.linkedId,
@@ -15,6 +17,8 @@ class CallCriteria implements Criteria {
     this.endDate,
     this.protocol,
     this.phone,
+    this.pageItemsCount,
+    this.page,
   });
 
   @override
@@ -51,5 +55,15 @@ class CallCriteria implements Criteria {
     args.add(phone);
 
     return List.unmodifiable(args.nonNulls.toList());
+  }
+
+  String get limit {
+    return 'LIMIT ${pageItemsCount ?? 100}\n';
+  }
+
+  String get offset {
+    final page = this.page ?? 1;
+    final pageItemsCount = this.pageItemsCount ?? 100;
+    return 'OFFSET ${(page * pageItemsCount) - pageItemsCount}\n';
   }
 }

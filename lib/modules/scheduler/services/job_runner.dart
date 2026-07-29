@@ -23,8 +23,7 @@ class JobRunner implements IJobRunner {
       await _schedules.complete(schedule);
       //
     } catch (e) {
-      await _schedules.setStatus(schedule, Status.failed);
-      rethrow;
+      await _schedules.setStatus(schedule, Status.failed, error: e.toString());
     }
   }
 }
