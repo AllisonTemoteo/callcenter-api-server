@@ -16,7 +16,7 @@ class SchedulerController {
       final body = Json.from(jsonDecode(reqBody));
 
       if (!body.containsKey('action_type')) {
-        throw ApiException("Required field not found: action_type");
+        throw ApiException("Required field not found: 'action_type'");
       }
 
       var type = ActionType.fromName(body['action_type']);

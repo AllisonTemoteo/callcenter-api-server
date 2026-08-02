@@ -20,12 +20,12 @@ class Login extends ValidableObject<String> {
 
   @override
   List<String>? validate() {
-    final errors = [];
+    final errors = <String>[];
     if (raw.length < 4) {
       errors.add('Login deve ter pelo menos 4 caracteres');
     }
 
-    return null;
+    return errors.isEmpty ? null : errors;
   }
 }
 
@@ -36,7 +36,7 @@ class Password extends ValidableObject<String> {
 
   @override
   List<String>? validate() {
-    final errors = [];
+    final errors = <String>[];
 
     final hasMinLength = raw.length >= 8;
     final hasUpperCase = RegExp(r'[A-Z]').hasMatch(raw);
@@ -64,6 +64,6 @@ class Password extends ValidableObject<String> {
       errors.add('A senha deve conter um caractere especial.');
     }
 
-    return null;
+    return errors.isEmpty ? null : errors;
   }
 }

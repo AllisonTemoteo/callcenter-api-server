@@ -6,16 +6,23 @@ abstract class UserMapper {
   static const String kId = 'id';
   static const String kLogin = 'login';
   static const String kPassword = 'password';
+  static const String kIsActive = 'is_active';
 
   static User fromMap(Json map) {
     return User(
       id: map[kId],
       login: map[kLogin],
       password: PasswordHash(map[kPassword]),
+      isActive: map[kIsActive] == 1,
     );
   }
 
   static Json toMap(User user) {
-    return {kId: user.id, kLogin: user.login, kPassword: user.password.value};
+    return {
+      kId: user.id,
+      kLogin: user.login,
+      kPassword: user.password.value,
+      kIsActive: user.isActive,
+    };
   }
 }

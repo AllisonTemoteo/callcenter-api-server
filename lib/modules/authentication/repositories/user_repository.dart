@@ -1,5 +1,6 @@
 import 'package:server/core/error/exceptions.dart';
 import 'package:server/core/external/database/app_database.dart';
+import 'package:server/core/utils/extensions.dart';
 import 'package:server/modules/authentication/models/password_hash.dart';
 import 'package:server/modules/authentication/models/user.dart';
 import 'package:server/modules/authentication/models/user_mapper.dart';
@@ -18,12 +19,14 @@ class UserRepository implements IUserRepository {
     final conn = await _storage.connection;
     final query = await conn.query(
       'user',
-      where: 'login = ?',
+      where: 'login = ? and is_active = 1',
       whereArgs: [login],
     );
 
     if (query.isEmpty) {
-      throw InvalidCredentialsException('Credenciais de acesso inválidas');
+      throw InvalidCredentialsException(
+        'Credenciais de acesso inválidas',
+      ).warn();
     }
 
     return UserMapper.fromMap(query.first);
@@ -37,6 +40,11 @@ class UserRepository implements IUserRepository {
       'password': hash,
     });
 
-    return User(id: userId, login: login, password: PasswordHash(hash));
+    return User(
+      id: userId,
+      login: login,
+      password: PasswordHash(hash),
+      isActive: false,
+    );
   }
 }
